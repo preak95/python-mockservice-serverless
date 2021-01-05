@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  python-mocservice-serverless
+
+  Sample SAM Template for python-mocservice-serverless
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  MockserviceDevGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/
+      Handler: mockservice-dev-get.get
+      Runtime: python3.8
+      Role: !GetAtt 
+        - MockserviceDevLambdaRole
+        - Arn
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{endpointpath+}
+            Method: get
+      Environment:                                             
+         Variables: 
+          DYNAMODB_TABLE: "sam-test"
+
+  MockserviceDevCreateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/
+      Handler: mockservice-dev-create.create
+      Runtime: python3.8
+      Role: !GetAtt 
+        - MockserviceDevLambdaRole
+        - Arn
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{endpointpath+}
+            Method: put
+      Environment:                                             
+         Variables: 
+          DYNAMODB_TABLE: "sam-test"
+
+  MockserviceDevListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/
+      Handler: mockservice-dev-list.list
+      Runtime: python3.8
+      Role: !GetAtt 
+        - MockserviceDevLambdaRole
+        - Arn
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /all
+            Method: get
+      Environment:                                             
+         Variables: 
+          DYNAMODB_TABLE: "sam-test"
+
+  MockserviceDevLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+        Version: 2012-10-17
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - 'dynamodb:*'
+                Effect: Allow
+                Resource: "arn:aws:dynamodb:us-east-1:055697220840:table/sam-test"
+              - Action:
+                  - 's3:*'
+                Effect: Allow
+                Resource: '*'
+            Version: 2012-10-17
+          PolicyName: mockservice-role-for-lambda
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/get/"
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt MockserviceDevGetFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt MockserviceDevLambdaRole.Arn
