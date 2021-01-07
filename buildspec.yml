@@ -5,7 +5,7 @@ phases:
         python: 3.8
   build:
     commands:
-      - sam package --s3-bucket prtis --region us-east-1
+      - sam package --s3-bucket prtis --region us-east-1 --output-template-file packaged-template.yml
 artifacts:
   files:
     - packaged-template.yml
