@@ -111,6 +111,6 @@ Outputs:
 Metadata:
   AWS::ServerlessRepo::Application:
     Name: python-mockservice-serverless
-    Description: A serverless version of an API
+    Description: A serverless version of an API. This will be build via CodeBuild and published via CodePipeline
     Author: Pratik Sharma
     Labels: ['tests']
