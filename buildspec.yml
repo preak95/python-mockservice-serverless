@@ -6,6 +6,7 @@ phases:
   build:
     commands:
       - sam package --s3-bucket prtis --region us-east-1 --output-template-file packaged-template.yml
+      - npm install --prefix ./mockservice-static-website
       - npm run build --prefix ./mockservice-static-website
       - aws s3 cp ./mockservice-static-website/build s3://{}
 artifacts:
