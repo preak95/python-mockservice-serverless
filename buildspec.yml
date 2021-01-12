@@ -6,7 +6,6 @@ phases:
   build:
     commands:
       - sam package --s3-bucket prtis --region us-east-1 --output-template-file packaged-template.yml
-      - sam deploy --stack-name hello-world-sam --region us-east-1 --s3-bucket prtis --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
       - npm install --prefix ./mockservice-static-website
       - npm run build --prefix ./mockservice-static-website
       - aws s3 cp ./mockservice-static-website/build/ s3://mockservice-serverless-website --recursive
