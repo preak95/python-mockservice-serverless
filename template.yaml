@@ -94,13 +94,13 @@ Resources:
             Version: 2012-10-17
           PolicyName: mockservice-role-for-lambda
 
-CloudFrontOriginAccessIdentity:
+  CloudFrontOriginAccessIdentity:
     Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: 'Serverless website OAI'
 
-CloudfrontDistribution:
+  CloudfrontDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
@@ -129,7 +129,7 @@ CloudfrontDistribution:
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
 
-S3BucketPolicy:
+  S3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref S3Bucket
@@ -144,7 +144,7 @@ S3BucketPolicy:
             Principal:
               AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
 
-S3Bucket:
+  S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
       # Change bucket name to reflect your website
