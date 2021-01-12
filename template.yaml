@@ -160,9 +160,6 @@ Outputs:
   FunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt MockserviceDevLambdaRole.Arn
-  WebsiteS3Bucket:
-    Description: "Location for website content"
-    Value: !GetAtt S3Bucket
 
 Metadata:
   AWS::ServerlessRepo::Application:
