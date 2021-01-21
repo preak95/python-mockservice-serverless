@@ -28,7 +28,7 @@ Resources:
             Method: get
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: "sam-test"
+          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
 
   MockserviceDevCreateFunction:
     Type: AWS::Serverless::Function
@@ -47,7 +47,7 @@ Resources:
             Method: put
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: "sam-test"
+          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
 
   MockserviceDevListFunction:
     Type: AWS::Serverless::Function
@@ -66,7 +66,7 @@ Resources:
             Method: get
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: "sam-test"
+          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
 
   MockserviceDevLambdaRole:
     Type: 'AWS::IAM::Role'
@@ -86,13 +86,32 @@ Resources:
               - Action:
                   - 'dynamodb:*'
                 Effect: Allow
-                Resource: "arn:aws:dynamodb:us-east-1:055697220840:table/sam-test"
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:055697220840:table/{DynammoDbTable}"
               - Action:
                   - 's3:*'
                 Effect: Allow
                 Resource: '*'
             Version: 2012-10-17
           PolicyName: mockservice-role-for-lambda
+
+  DynamoDbTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      KeySchema:
+        - 
+          AttributeName: 'id'
+          KeyType: 'HASH'
+        - 
+          AttributeName: 'params'
+          KeyType: 'RANGE'
+      AttributeDefinition:
+        - 
+          AttributeName: 'id'
+          AttributeType: 'S'
+        - 
+          AttributeName: 'params'
+          AttributeType: 'S'
+      TableName: !Ref "AWS::StackName"
 
   CloudFrontOriginAccessIdentity:
     Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
