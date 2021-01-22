@@ -28,7 +28,7 @@ Resources:
             Method: get
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
+          DYNAMODB_TABLE: !Sub "${DynamoDbTable}"
 
   MockserviceDevCreateFunction:
     Type: AWS::Serverless::Function
@@ -47,7 +47,7 @@ Resources:
             Method: put
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
+          DYNAMODB_TABLE: !Sub "${DynamoDbTable}"
 
   MockserviceDevListFunction:
     Type: AWS::Serverless::Function
@@ -66,7 +66,7 @@ Resources:
             Method: get
       Environment:                                             
          Variables: 
-          DYNAMODB_TABLE: !Sub "{DynamoDbTable}"
+          DYNAMODB_TABLE: !Sub "${DynamoDbTable}"
 
   MockserviceDevLambdaRole:
     Type: 'AWS::IAM::Role'
@@ -86,9 +86,13 @@ Resources:
               - Action:
                   - 'dynamodb:*'
                 Effect: Allow
-                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:055697220840:table/{DynammoDbTable}"
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:055697220840:table/${DynamoDbTable}"
               - Action:
                   - 's3:*'
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                  - 'logs:*'
                 Effect: Allow
                 Resource: '*'
             Version: 2012-10-17
@@ -104,13 +108,16 @@ Resources:
         - 
           AttributeName: 'params'
           KeyType: 'RANGE'
-      AttributeDefinition:
+      AttributeDefinitions:
         - 
           AttributeName: 'id'
           AttributeType: 'S'
         - 
           AttributeName: 'params'
           AttributeType: 'S'
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
       TableName: !Ref "AWS::StackName"
 
   CloudFrontOriginAccessIdentity:
