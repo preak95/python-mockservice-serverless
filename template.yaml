@@ -9,6 +9,11 @@ Description: >
 Globals:
   Function:
     Timeout: 3
+    Environment:
+      Variables:
+        DOMAIN_NAME: 'https://d3rh4bwqlwnkgx.cloudfront.net'
+  Api:
+    Cors: "'https://d3rh4bwqlwnkgx.cloudfront.net'"
 
 Resources:
   MockserviceDevGetFunction:
@@ -154,6 +159,13 @@ Resources:
             QueryString: false
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
+        CustomErrorResponses:
+          - 
+            ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+
 
   S3BucketPolicy:
     Type: AWS::S3::BucketPolicy
